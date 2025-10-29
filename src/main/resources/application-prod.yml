@@ -1,7 +1,5 @@
 spring:
   application:
     name: ecommerce-be
-  profiles:
-    active: prod
 server:
   port: ${PORT:8080}
