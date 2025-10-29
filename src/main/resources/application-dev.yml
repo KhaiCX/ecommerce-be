@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: ecommerce-be
+  profiles:
+    active: dev
+server:
+  port: ${PORT:8080}
