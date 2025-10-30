@@ -1,5 +1,20 @@
 spring:
   application:
     name: ecommerce-be
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: postgres
+    driverClassName: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update # or 'create', 'create-drop', 'validate', 'none', 'update'
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        default_schema: ecommerce
 server:
   port: ${PORT:8080}
+
