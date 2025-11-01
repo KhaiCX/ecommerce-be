@@ -1,6 +1,5 @@
 package com.ecommerce.backend.config;
 
-import com.ecommerce.backend.constant.ERole;
 import com.ecommerce.backend.filter.JwtAuthenticationFilter;
 import com.ecommerce.backend.handler.CustomAccessDeniedHandler;
 import com.ecommerce.backend.handler.CustomAuthenticationEntryPoint;
@@ -34,7 +33,7 @@ public class WebSecurityConfig {
                         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                                 .authorizeHttpRequests(request ->
                                         request.requestMatchers("/rest/api/auth/**").permitAll()
-                                                .requestMatchers("rest/api/admin/**").hasRole("ADMIN")
+                                                .requestMatchers("/rest/api/admin/**").hasRole("ADMIN")
                                                 .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex
                         .accessDeniedHandler(accessDeniedHandler)
