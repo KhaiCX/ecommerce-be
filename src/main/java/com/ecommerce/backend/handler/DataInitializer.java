@@ -21,14 +21,14 @@ public class DataInitializer {
         return args -> {
 
             //init data role
-            Role roleAdmin = new Role();
+            Role roleAdmin = roleRepository.findByRole("ROLE_ADMIN").orElse(new Role());
             roleAdmin.setRole("ROLE_ADMIN");
-
-            Role roleUser = new Role();
-            roleUser.setRole("ROLE_USER");
-
-            Role roleUserInserted = roleRepository.saveAndFlush(roleUser);
             Role roleAdminInserted = roleRepository.saveAndFlush(roleAdmin);
+
+            Role roleUser = roleRepository.findByRole("ROLE_USER").orElse(new Role());
+            roleUser.setRole("ROLE_USER");
+            Role roleUserInserted = roleRepository.saveAndFlush(roleUser);
+
 
             //init admin account
             if (userRepository.findByEmail("admin@gmail.com").isEmpty()) {

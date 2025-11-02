@@ -13,6 +13,10 @@ import com.ecommerce.backend.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -46,8 +50,10 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public List<User> getAll() {
-        return userRepository.findAll();
+    public Page<User> getAll(int pageNum, int pageSize, String sortField, String sortDir) {
+        Sort sort = sortDir.equals("asc") ? Sort.by(sortField).ascending() : Sort.by(sortField).descending();
+        Pageable pageable = PageRequest.of(pageNum - 1, pageSize, sort);
+        return userRepository.findAll(pageable);
     }
 
     public User getUserById(UUID id) {
