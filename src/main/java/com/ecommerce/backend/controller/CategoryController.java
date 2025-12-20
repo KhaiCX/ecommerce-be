@@ -1,6 +1,7 @@
 package com.ecommerce.backend.controller;
 
 import com.ecommerce.backend.model.request.CategoryRequest;
+import com.ecommerce.backend.model.request.SoftDeleteRequest;
 import com.ecommerce.backend.model.response.CategoryResponse;
 import com.ecommerce.backend.service.CategoryService;
 import lombok.RequiredArgsConstructor;
@@ -43,8 +44,8 @@ public class CategoryController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/admin/categories/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable UUID id) {
-        categoryService.deleteById(id);
+    public ResponseEntity<Void> deleteById(@PathVariable UUID id, @RequestBody SoftDeleteRequest request) {
+        categoryService.deleteById(id, request);
         return ResponseEntity.status(HttpStatus.OK.value()).build();
     }
 

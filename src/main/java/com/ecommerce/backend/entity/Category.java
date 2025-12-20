@@ -15,17 +15,17 @@ import java.util.UUID;
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
-@SQLDelete(sql = "update categories set deleted = true where category_id = ?")
-@FilterDef(
-        name = "deletedCategory",
-        parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
-@Filter(
-        name = "deletedCategory",
-        condition = "deleted = :isDeleted")
+//@SQLDelete(sql = "update categories set deleted = true where category_id = ?")
+//@FilterDef(
+//        name = "deletedCategory",
+//        parameters = @ParamDef(name = "isDeleted", type = Boolean.class))
+//@Filter(
+//        name = "deletedCategory",
+//        condition = "deleted = :isDeleted")
 public class Category extends BaseEntity {
     @Id
     @GeneratedValue
     private UUID categoryId;
     private String name;
-    private Boolean deleted = Boolean.FALSE;
+    private Boolean deleted = false;
 }
