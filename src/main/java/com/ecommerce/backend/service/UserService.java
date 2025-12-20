@@ -6,6 +6,7 @@ import com.ecommerce.backend.entity.Role;
 import com.ecommerce.backend.entity.User;
 import com.ecommerce.backend.exception.ResourceNotFoundException;
 import com.ecommerce.backend.model.request.AuthenticationRequest;
+import com.ecommerce.backend.model.request.SoftDeleteRequest;
 import com.ecommerce.backend.model.request.UserRequest;
 import com.ecommerce.backend.provider.JwtAuthenticationProvider;
 import com.ecommerce.backend.repository.RoleRepository;
@@ -32,7 +33,6 @@ public class UserService {
     UserRepository userRepository;
     RoleRepository roleRepository;
     BCryptPasswordEncoder passwordEncoder;
-    JwtAuthenticationProvider jwtAuthenticationProvider;
 
     public User register(AuthenticationRequest request) {
         String roleNameUser = ERole.ROLE_USER.name();
@@ -77,8 +77,12 @@ public class UserService {
 
     }
 
-    public void deleteById(UUID id) {
-        userRepository.deleteById(id);
+    public void deleteById(UUID id, SoftDeleteRequest request) {
+        if (request.isSoftDelete()) {
+            userRepository.softDeleteById(id);
+        } else {
+            userRepository.deleteById(id);
+        }
     }
 
     public User addAdminUser(AuthenticationRequest request) {

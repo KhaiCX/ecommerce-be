@@ -2,7 +2,9 @@ package com.ecommerce.backend.controller;
 
 import com.ecommerce.backend.entity.User;
 import com.ecommerce.backend.model.request.AuthenticationRequest;
+import com.ecommerce.backend.model.request.SoftDeleteRequest;
 import com.ecommerce.backend.model.request.UserRequest;
+import com.ecommerce.backend.model.response.PageResponse;
 import com.ecommerce.backend.model.response.UserResponse;
 import com.ecommerce.backend.service.UserService;
 import lombok.AccessLevel;
@@ -26,7 +28,11 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<UserResponse> getDataUser() {
-        return getPageUser(1, 5, "email", "asc");
+        return getPageUser(
+                1,
+                5,
+                "email",
+                "asc");
     }
     @GetMapping("/page")
     public ResponseEntity<UserResponse> getPageUser(@RequestParam(name = "pageNum") int pageNum
@@ -43,16 +49,17 @@ public class UserController {
 
         return ResponseEntity.ok().body(UserResponse.builder()
                 .users(users)
-                .pageNum(pageNum)
-                .pageSize(pageSize)
-                .currentPage(pageNum)
-                .totalPages(totalPages)
-                .totalItems(totalElements)
-                .startPage(startPage)
-                .endPage(endPage)
-                .sortField(sortField)
-                .sortDir(sortDir)
-                .reverseSortDir(reverseSortDir)
+                .pageResponse(PageResponse.builder()
+                        .pageNum(pageNum)
+                        .pageSize(pageSize)
+                        .currentPage(pageNum)
+                        .totalPages(totalPages)
+                        .totalItems(totalElements)
+                        .startPage(startPage)
+                        .endPage(endPage)
+                        .sortField(sortField)
+                        .sortDir(sortDir)
+                        .reverseSortDir(reverseSortDir).build())
                 .build());
     }
 
@@ -67,8 +74,10 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
-        userService.deleteById(id);
+    public ResponseEntity<Void> delete(
+            @PathVariable UUID id,
+            @RequestBody SoftDeleteRequest request) {
+        userService.deleteById(id, request);
         return ResponseEntity.status(HttpStatus.OK.value()).build();
     }
 

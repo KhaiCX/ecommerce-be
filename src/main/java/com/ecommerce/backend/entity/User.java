@@ -28,6 +28,7 @@ public class User {
     private LocalDateTime lastLogin;
     private String avatar;
     private String password;
+    private Boolean deleted = false;
     @Enumerated(EnumType.STRING)
     private EProvider provider;
     @ManyToMany(fetch = FetchType.EAGER)
