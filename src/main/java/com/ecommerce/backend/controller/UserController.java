@@ -1,9 +1,9 @@
-package com.ecommerce.backend.controller.admin;
+package com.ecommerce.backend.controller;
 
 import com.ecommerce.backend.entity.User;
 import com.ecommerce.backend.model.request.AuthenticationRequest;
 import com.ecommerce.backend.model.request.UserRequest;
-import com.ecommerce.backend.model.response.UserListResponse;
+import com.ecommerce.backend.model.response.UserResponse;
 import com.ecommerce.backend.service.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -20,16 +20,16 @@ import java.util.UUID;
 @RequestMapping("/rest/api/admin/users")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class UserManagementController {
+public class UserController {
     static int WINDOW_SIZE = 5;
     UserService userService;
 
     @GetMapping
-    public ResponseEntity<UserListResponse> getDataUser() {
+    public ResponseEntity<UserResponse> getDataUser() {
         return getPageUser(1, 5, "email", "asc");
     }
     @GetMapping("/page")
-    public ResponseEntity<UserListResponse> getPageUser(@RequestParam(name = "pageNum") int pageNum
+    public ResponseEntity<UserResponse> getPageUser(@RequestParam(name = "pageNum") int pageNum
             , @RequestParam(name = "pageSize") int pageSize
             , @RequestParam(name = "sortField") String sortField
             , @RequestParam(name = "sortDir") String sortDir) {
@@ -41,7 +41,7 @@ public class UserManagementController {
         int endPage = Math.min(startPage + WINDOW_SIZE - 1, totalPages - 1);
         String reverseSortDir = sortDir.equals("asc") ? "desc" : "asc";
 
-        return ResponseEntity.ok().body(UserListResponse.builder()
+        return ResponseEntity.ok().body(UserResponse.builder()
                 .users(users)
                 .pageNum(pageNum)
                 .pageSize(pageSize)

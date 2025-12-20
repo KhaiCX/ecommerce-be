@@ -6,7 +6,7 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record UserListResponse(
+public record UserResponse(
         @JsonProperty("users") List<User> users,
         @JsonProperty("pageNum") int pageNum,
         @JsonProperty("pageSize") int pageSize,

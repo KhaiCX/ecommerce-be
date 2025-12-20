@@ -5,16 +5,21 @@ spring:
     url: jdbc:postgresql://localhost:5432/postgres
     username: postgres
     password: postgres
+#    url: jdbc:postgresql://dpg-d3vq2ii4d50c73ajejs0-a.oregon-postgres.render.com:5432/ecommerce_9ex1
+#    username: ecommerce_9ex1_user
+#    password: vj3WsDEZJhfwPsfrRIWyhry1SZJ5AJwP
     driverClassName: org.postgresql.Driver
   jpa:
     show-sql: true
     hibernate:
       ddl-auto: update # or 'create', 'create-drop', 'validate', 'none', 'update'
     open-in-view: false
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        default_schema: ecommerce
+#        default_schema: ecommerce
 server:
   port: ${PORT:8080}
+jwt:
+  access-token-expiration: 900000 # 15 minutes
+  refresh-token-expiration: 604800000 # 7 days
+  secret:
+    key: ${SECRET}
 

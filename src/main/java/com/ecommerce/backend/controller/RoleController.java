@@ -1,4 +1,4 @@
-package com.ecommerce.backend.controller.admin;
+package com.ecommerce.backend.controller;
 
 import com.ecommerce.backend.entity.Role;
 import com.ecommerce.backend.model.request.RoleRequest;
@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/rest/api/admin/roles")
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class RoleAdminController {
+public class RoleController {
     RoleService roleService;
     @GetMapping
     public ResponseEntity<List<Role>> getAllRoles() {

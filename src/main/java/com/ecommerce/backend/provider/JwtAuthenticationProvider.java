@@ -16,16 +16,20 @@ import java.util.UUID;
 public class JwtAuthenticationProvider {
     private final String application;
     private final SecretKey secretKey;
+    private final Long expiredAccessToken;
 
     public JwtAuthenticationProvider(
-            @Value("${spring.application.name}") String application, @Value("${jwt.secret.key}") String secretKey) {
+            @Value("${spring.application.name}") String application,
+            @Value("${jwt.secret.key}") String secretKey,
+            @Value("${jwt.access-token-expiration}") Long expiredAccessToken) {
         this.application = application;
         this.secretKey = Keys.hmacShaKeyFor(secretKey.getBytes());
+        this.expiredAccessToken = expiredAccessToken;
     }
 
     public String generateToken(UUID userId, Set<Role> roles) {
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + 60 * 60 * 1000);
+        Date expiryDate = new Date(now.getTime() + expiredAccessToken);
         return Jwts.builder()
                 .subject(userId.toString())
                 .issuer(application)

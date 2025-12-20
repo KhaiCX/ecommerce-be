@@ -5,27 +5,28 @@ import com.ecommerce.backend.entity.User;
 import com.ecommerce.backend.exception.ResourceNotFoundException;
 import com.ecommerce.backend.repository.RefreshTokenRepository;
 import com.ecommerce.backend.repository.UserRepository;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RefreshTokenService {
-    RefreshTokenRepository refreshTokenRepository;
-    UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final UserRepository userRepository;
+
+    @Value("${jwt.refresh-token-expiration}")
+    private Long refreshTokenExpiration;
 
     public RefreshToken createRefreshToken(User user, String device) {
-        RefreshToken refreshToken = refreshTokenRepository.findByUserAndDevice(user, device)
+        RefreshToken refreshToken = refreshTokenRepository.findByUserAndDeviceAndRevokedFalse(user, device)
                         .orElse(new RefreshToken());
         refreshToken.setUser(user);
         refreshToken.setDevice(device);
         refreshToken.setToken(UUID.randomUUID().toString());
-        refreshToken.setExpiryDate(LocalDateTime.now().plusSeconds(7 * 24 * 60 * 60));
+        refreshToken.setExpiryDate(LocalDateTime.now().plusSeconds(refreshTokenExpiration));
         refreshToken.setCreatedAt(LocalDateTime.now());
         return refreshTokenRepository.save(refreshToken);
     }
@@ -34,10 +35,19 @@ public class RefreshTokenService {
         return token.getExpiryDate().isBefore(LocalDateTime.now());
     }
 
-    public RefreshToken getByTokenAndDevice(String token, String device) {
-        return refreshTokenRepository.findByTokenAndDevice(token, device).orElseThrow(
-                () -> new ResourceNotFoundException("Token not found: " + token + " with device; " + device)
+    public RefreshToken getByTokenAndDeviceAndRevokedFalse(String token, String device) {
+        return refreshTokenRepository.findByTokenAndDeviceAndRevokedFalse(token, device).orElseThrow(
+                () -> new ResourceNotFoundException("Token not found: " + token + " with device: " + device)
         );
+    }
+
+    public RefreshToken getByUserAndDeviceAndRevokedFalse(User user, String device) {
+        return refreshTokenRepository.findByUserAndDeviceAndRevokedFalse(user, device)
+                .orElseThrow(() -> new ResourceNotFoundException("Refresh Token not found with User: " + user.getEmail() + " and device: " + device));
+    }
+
+    public void save(RefreshToken refreshToken) {
+        refreshTokenRepository.save(refreshToken);
     }
 
     public void delete(RefreshToken refreshToken) {

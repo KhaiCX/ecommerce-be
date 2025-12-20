@@ -33,6 +33,9 @@ public class User {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
+    @OneToOne
+    @JoinColumn(name = "cart_id")
+    private Cart cart;
 
     public User(String email, String password, EProvider provider, Set<Role> roles, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.email = email;

@@ -1,7 +1,7 @@
 package com.ecommerce.backend.service;
 
+import com.ecommerce.backend.custom.CustomUserDetails;
 import com.ecommerce.backend.entity.RefreshToken;
-import com.ecommerce.backend.entity.Role;
 import com.ecommerce.backend.entity.User;
 import com.ecommerce.backend.exception.BadRequestException;
 import com.ecommerce.backend.model.request.AuthenticationRequest;
@@ -9,22 +9,28 @@ import com.ecommerce.backend.model.request.RefreshTokenRequest;
 import com.ecommerce.backend.model.response.AuthenticationResponse;
 import com.ecommerce.backend.provider.JwtAuthenticationProvider;
 import com.ecommerce.backend.repository.UserRepository;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.time.LocalDateTime;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthenticationService {
-    UserRepository userRepository;
-    RefreshTokenService refreshTokenService;
-    JwtAuthenticationProvider jwtAuthenticationProvider;
-    BCryptPasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final RefreshTokenService refreshTokenService;
+    private final JwtAuthenticationProvider jwtAuthenticationProvider;
+    private final BCryptPasswordEncoder passwordEncoder;
+
+    @Value("${jwt.access-token-expiration}")
+    private Long accessTokenExpiration;
+    @Value("${jwt.refresh-token-expiration}")
+    private Long refreshTokenExpiration;
 
     public AuthenticationResponse login(AuthenticationRequest request, String device) {
         String email = request.email();
@@ -35,6 +41,8 @@ public class AuthenticationService {
             throw new RuntimeException("Password incorrect");
         }
 
+        updateTimeLogin(user);
+
         String accessToken = jwtAuthenticationProvider.generateToken(user.getUserId(), user.getRoles());
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user, device);
         return AuthenticationResponse.builder()
@@ -43,7 +51,7 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse refresh(RefreshTokenRequest request, String device) {
-        RefreshToken refreshToken = refreshTokenService.getByTokenAndDevice(request.refreshToken(), device);
+        RefreshToken refreshToken = refreshTokenService.getByTokenAndDeviceAndRevokedFalse(request.refreshToken(), device);
         if (refreshTokenService.verifyExpiration(refreshToken)) {
             refreshTokenService.delete(refreshToken);
             throw new RuntimeException("Refresh token invalid: " + refreshToken.getToken());
@@ -55,5 +63,19 @@ public class AuthenticationService {
         return AuthenticationResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken.getToken()).build();
+    }
+
+    public void logout(String device) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        User user = userDetails.getUser();
+        RefreshToken refreshToken = refreshTokenService.getByUserAndDeviceAndRevokedFalse(user, device);
+        refreshToken.setRevoked(true);
+        refreshTokenService.save(refreshToken);
+    }
+
+    private void updateTimeLogin(User user) {
+        user.setLastLogin(LocalDateTime.now());
+        userRepository.save(user);
     }
 }

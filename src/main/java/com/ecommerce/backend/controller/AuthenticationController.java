@@ -1,4 +1,4 @@
-package com.ecommerce.backend.controller.admin;
+package com.ecommerce.backend.controller;
 
 import com.ecommerce.backend.entity.User;
 import com.ecommerce.backend.model.request.AuthenticationRequest;
@@ -10,7 +10,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,8 +24,9 @@ public class AuthenticationController {
     UserService userService;
     AuthenticationService authenticationService;
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody @Validated AuthenticationRequest request) {
-        return ResponseEntity.ok().body(userService.register(request));
+    public ResponseEntity<Void> register(@RequestBody @Validated AuthenticationRequest request) {
+        userService.register(request);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/login")
@@ -40,4 +43,11 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.refresh(request, device));
     }
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest httpServletRequest) {
+        String device = httpServletRequest.getHeader("User-Agent");
+        authenticationService.logout(device);
+        return ResponseEntity.ok().build();
+    }
 }

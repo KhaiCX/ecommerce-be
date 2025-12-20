@@ -16,27 +16,21 @@ public class RefreshToken {
     private Long id;
 
     @NotNull
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     private String token;
 
     @NotNull
-    @Column(nullable = false)
     private String device;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    @NotNull
-    @Column(nullable = false)
     private LocalDateTime expiryDate;
 
-    @NotNull
-    @Column(nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     private Boolean revoked = false;
 
     @NotNull
-    @Column(nullable = false)
     private LocalDateTime createdAt;
 }
