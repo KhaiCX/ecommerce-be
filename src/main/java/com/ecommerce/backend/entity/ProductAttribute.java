@@ -13,6 +13,6 @@ public class ProductAttribute {
     @Id
     @GeneratedValue
     private UUID productAttributeId;
-    private String type;
+    private String name;
     private String value;
 }

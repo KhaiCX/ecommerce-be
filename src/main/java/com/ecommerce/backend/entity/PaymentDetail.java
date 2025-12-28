@@ -3,7 +3,6 @@ package com.ecommerce.backend.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import java.util.UUID;
 
 @Entity
 @Table(name = "payment_details")
@@ -11,8 +10,8 @@ import java.util.UUID;
 @Setter
 public class PaymentDetail {
     @Id
-    @GeneratedValue
-    private UUID paymentDetailId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long paymentDetailId;
     @ManyToOne
     @JoinColumn(name = "order_id")
     private Order order;

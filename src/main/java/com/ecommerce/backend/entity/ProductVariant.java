@@ -4,25 +4,18 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import java.math.BigDecimal;
-import java.util.UUID;
 
 @Entity
-@Table(name = "product_skus")
+@Table(name = "product_variants")
 @Getter
 @Setter
-public class ProductSku {
+public class ProductVariant {
     @Id
-    @GeneratedValue
-    private UUID productSkuId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long productVariantId;
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
-    @ManyToOne
-    @JoinColumn(name = "color_id")
-    private ProductAttribute color;
-    @ManyToOne
-    @JoinColumn(name = "size_id")
-    private ProductAttribute size;
     private Integer stock;
     private BigDecimal price;
 }

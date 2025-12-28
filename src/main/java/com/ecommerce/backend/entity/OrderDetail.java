@@ -3,7 +3,6 @@ package com.ecommerce.backend.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import java.util.UUID;
 
 @Entity
 @Table(name = "order_details")
@@ -12,7 +11,7 @@ import java.util.UUID;
 public class OrderDetail {
     @Id
     @GeneratedValue
-    private UUID orderDetailId;
+    private Long orderDetailId;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

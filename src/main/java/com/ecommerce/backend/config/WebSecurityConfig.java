@@ -36,7 +36,8 @@ public class WebSecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(request ->
                         request.requestMatchers("/rest/api/auth/**").permitAll()
-                                .requestMatchers("/rest/api/categories").permitAll()
+                                .requestMatchers("/rest/api/categories/**").permitAll()
+                                .requestMatchers("/rest/api/products/**").permitAll()
                                 .requestMatchers("/rest/api/admin/**").hasRole("ADMIN")
                                 .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex

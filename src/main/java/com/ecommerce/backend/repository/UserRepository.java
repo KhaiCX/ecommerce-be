@@ -14,7 +14,6 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     Optional<User> findByUsername(String username);
     Optional<User> findByEmail(String email);
     Optional<User> findByUserId(UUID userId);
-    Page<User> findAll(Pageable pageable);
     @Query("update User u set u.deleted = true where u.userId = :id")
     void softDeleteById(UUID id);
 }

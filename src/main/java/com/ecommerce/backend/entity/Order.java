@@ -3,9 +3,7 @@ package com.ecommerce.backend.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.math.BigDecimal;
-import java.util.UUID;
 
 @Entity
 @Table(name = "orders")
@@ -14,7 +12,7 @@ import java.util.UUID;
 public class Order {
     @Id
     @GeneratedValue
-    private UUID orderId;
+    private Long orderId;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

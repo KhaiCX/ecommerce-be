@@ -28,7 +28,7 @@ public class CategoryService {
                 .toList();
     }
 
-    public CategoryResponse getById(UUID categoryId) {
+    public CategoryResponse getById(Integer categoryId) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
         return new CategoryResponse(category.getName(), category.getDeleted());
@@ -40,7 +40,7 @@ public class CategoryService {
         Category savedCategory = categoryRepository.save(category);
         return new CategoryResponse(savedCategory.getName(), savedCategory.getDeleted());
     }
-    public CategoryResponse updateCategoryById(CategoryRequest request, UUID id) {
+    public CategoryResponse updateCategoryById(CategoryRequest request, Integer id) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category not found"));
         category.setName(request.name());
@@ -48,7 +48,7 @@ public class CategoryService {
         return new CategoryResponse(savedCategory.getName(), savedCategory.getDeleted());
     }
 
-    public void deleteById(UUID categoryId, SoftDeleteRequest request) {
+    public void deleteById(Integer categoryId, SoftDeleteRequest request) {
         if (request.isSoftDelete()) {
             categoryRepository.softDeleteById(categoryId);
         }

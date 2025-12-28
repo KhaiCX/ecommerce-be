@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/rest/api")
@@ -27,7 +26,7 @@ public class CategoryController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin/categories/{id}")
-    public ResponseEntity<CategoryResponse> getById(@PathVariable UUID id) {
+    public ResponseEntity<CategoryResponse> getById(@PathVariable Integer id) {
         return ResponseEntity
                 .ok()
                 .body(categoryService.getById(id));
@@ -44,7 +43,7 @@ public class CategoryController {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/admin/categories/{id}")
     public ResponseEntity<CategoryResponse> updateCategory(
-            @PathVariable UUID id,
+            @PathVariable Integer id,
             @RequestBody CategoryRequest request) {
         return ResponseEntity
                 .ok(categoryService.updateCategoryById(request, id));
@@ -53,7 +52,7 @@ public class CategoryController {
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/admin/categories/{id}")
     public ResponseEntity<Void> deleteById(
-            @PathVariable UUID id,
+            @PathVariable Integer id,
             @RequestBody SoftDeleteRequest request) {
         categoryService.deleteById(id, request);
         return ResponseEntity

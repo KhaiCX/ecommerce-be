@@ -25,7 +25,7 @@ import java.util.UUID;
 public class Category extends BaseEntity {
     @Id
     @GeneratedValue
-    private UUID categoryId;
+    private Integer categoryId;
     private String name;
     private Boolean deleted = false;
 }
